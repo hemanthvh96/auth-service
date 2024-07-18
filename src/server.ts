@@ -1,18 +1,30 @@
 import { Config } from './config';
 import app from './app';
+import logger from './config/logger';
 
 const startServer = () => {
     const PORT = Config.PORT;
 
     try {
         app.listen(PORT, () => {
-            /* eslint no-console: off */
-            console.log(`Listening on port ${PORT}`);
+            logger.info(`Listening on port ${PORT}`);
         });
     } catch (err) {
-        console.error(err);
-        process.exit(1);
+        if (err instanceof Error) {
+            logger.error(err.message);
+            setTimeout(() => {
+                process.exit(1);
+            }, 1000);
+        }
     }
 };
 
 startServer();
+
+/* 
+Why timeout needed to exit the process:
+
+logger.error() writes asynchronously to the file.
+So we have to kind of wait for that operation for that to complete.
+Hence we delayed the process exit by 1 second.
+*/
