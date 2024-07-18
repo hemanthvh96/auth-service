@@ -10,7 +10,14 @@ export default tseslint.config({
         ...tseslint.configs.recommendedTypeChecked,
         eslintConfigPrettier,
     ],
-    ignores: ['dist', 'node_modules', '*.spec.ts', 'tests/', '.github', '*.js'],
+    ignores: [
+        'dist',
+        'node_modules',
+        '*.spec.ts',
+        'tests/',
+        '.github',
+        '**/*.js',
+    ],
     languageOptions: {
         parserOptions: {
             project: true,
