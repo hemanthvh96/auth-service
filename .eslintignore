@@ -4,4 +4,4 @@ node_modules
 tests/
 .github
 *.js
-src/server.ts
+*.mjs

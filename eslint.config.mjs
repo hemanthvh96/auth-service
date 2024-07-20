@@ -17,6 +17,7 @@ export default tseslint.config({
         'tests/',
         '.github',
         '**/*.js',
+        '**/*.mjs',
     ],
     languageOptions: {
         parserOptions: {
