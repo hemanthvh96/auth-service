@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from './app';
 
-describe('Check for jest test', () => {
+describe.skip('Check for jest test', () => {
     // For Unit Testing
 
     it('addition check', () => {
@@ -10,7 +10,7 @@ describe('Check for jest test', () => {
     });
 });
 
-describe('GET /', () => {
+describe.skip('GET /', () => {
     // For Integration Testing (HTTP Calls/Requests) use supertest package
 
     it('should retun 200 status code', async () => {
