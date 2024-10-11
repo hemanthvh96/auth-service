@@ -145,5 +145,27 @@ describe('POST /auth/register', () => {
         });
     });
 
-    describe('Fields are missing', () => {});
+    describe('Fields are missing', () => {
+        it('should return 400 status code if fields are missing', async () => {
+            const userData = {
+                firstName: 'Hemanth',
+                lastName: 'V',
+                email: '',
+                password: 'test',
+            };
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            expect(response.status).toBe(400);
+
+            // ALSO ABOVE USER SENT THROUGH THE REGISTER REQUEST SHOULD NOT BE STORED
+
+            const userRepository = connection.getRepository(User);
+            const users = await userRepository.find();
+
+            expect(users).toHaveLength(1);
+        });
+    });
 });
