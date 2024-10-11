@@ -76,7 +76,7 @@ describe('POST /auth/register', () => {
             expect(users[0].firstName).toBe(userData.firstName);
             expect(users[0].lastName).toBe(userData.lastName);
             expect(users[0].email).toBe(userData.email);
-            expect(users[0].password).toBe(userData.password);
+            expect(users[0].password).not.toBe(userData.password);
         });
 
         it('should assign a role', async () => {
@@ -96,6 +96,52 @@ describe('POST /auth/register', () => {
             // expect(users[0].role).toBe('customer');
 
             expect(users[0]).toHaveProperty('role', Roles.CUSTOMER);
+        });
+
+        it('should store the hashed password in the DB', async () => {
+            const userData = {
+                firstName: 'Hemanth',
+                lastName: 'V',
+                email: 'hemanthvhs@gmail.com',
+                password: 'test',
+            };
+
+            await request(app).post('/auth/register').send(userData);
+
+            const userRepository = connection.getRepository(User);
+            const users = await userRepository.find();
+
+            expect(users[0].password).not.toBe(userData.password);
+        });
+
+        it('should return 400 status code if email is already present', async () => {
+            const userData = {
+                firstName: 'Hemanth',
+                lastName: 'V',
+                email: 'hemanthvhs@gmail.com',
+                password: 'test',
+            };
+
+            // BELOW APPROACH MAKES SURE THAT THERE EXISTS A RECORD WITH ABOVE USER DATA
+            const userRepository = connection.getRepository(User);
+            await userRepository.save({
+                ...userData,
+                role: Roles.CUSTOMER,
+            });
+
+            // NOW WE ARE TRYING TO REGISTER THE USER WITH SAME EMAIL - SHOULD RETURN 400
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            expect(response.statusCode).toBe(400);
+
+            // ALSO ABOVE USER SENT THROUGH THE REGISTER REQUEST SHOULD NOT BE STORED
+
+            const users = await userRepository.find();
+
+            expect(users).toHaveLength(1);
         });
     });
 
