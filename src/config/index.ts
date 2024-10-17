@@ -5,8 +5,15 @@ import path from 'path';
 // WE SET NODE_ENV IN PACKAGE.JSON WITH THE HELP OF CROSS-ENV PACKAGE
 config({ path: path.join(__dirname, `../../.env.${process.env.NODE_ENV}`) });
 
-const { NODE_ENV, PORT, DB_USERNAME, DB_PASSWORD, DB_PORT, DB_DATABASE } =
-    process.env;
+const {
+    NODE_ENV,
+    PORT,
+    DB_USERNAME,
+    DB_PASSWORD,
+    DB_PORT,
+    DB_DATABASE,
+    REFRESH_TOKEN_SECRET,
+} = process.env;
 
 export const Config = {
     NODE_ENV,
@@ -15,4 +22,5 @@ export const Config = {
     DB_PASSWORD,
     DB_PORT,
     DB_DATABASE,
+    REFRESH_TOKEN_SECRET,
 };
