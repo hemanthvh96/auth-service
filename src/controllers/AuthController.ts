@@ -3,15 +3,13 @@ import { RegisterUserRequest } from '../types';
 import { UserService } from '../services/UserService';
 import { Logger } from 'winston';
 import { validationResult } from 'express-validator';
-import { JwtPayload, sign } from 'jsonwebtoken';
-import fs from 'fs';
-import path from 'path';
-import createHttpError from 'http-errors';
-import { Config } from '../config/index';
+import { JwtPayload } from 'jsonwebtoken';
+import { TokenService } from '../services/TokenService';
 
 export class AuthController {
     constructor(
         private userService: UserService,
+        private tokenService: TokenService,
         private logger: Logger,
     ) {}
     async register(
@@ -41,31 +39,12 @@ export class AuthController {
                 password,
             });
 
-            let privateKey: Buffer; // When you read from a file it should be Buffer
-            try {
-                privateKey = fs.readFileSync(
-                    path.join(__dirname, '../../certs/private.pem'),
-                );
-            } catch (err) {
-                const error = createHttpError(500, 'Error reading private key');
-                return next(error);
-            }
-
             const payload: JwtPayload = {
                 sub: String(user.id), // sub accepts string but user.id is Number. Typecast
                 role: user.role,
             };
 
-            const accessToken = sign(payload, privateKey, {
-                algorithm: 'RS256',
-                expiresIn: '1h',
-                issuer: 'auth-service',
-            });
-            const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET!, {
-                algorithm: 'HS256',
-                expiresIn: '1y',
-                issuer: 'auth-service',
-            });
+            const accessToken = this.tokenService.generateAccessToken(payload);
 
             res.cookie('accessToken', accessToken, {
                 domain: 'localhost',
@@ -74,6 +53,16 @@ export class AuthController {
                 secure: false, // IN PROD SET TO TRUE
                 httpOnly: true,
             });
+
+            // PERSISTING REFRESH TOKEN TO DB:
+
+            const newRefreshTokenDoc =
+                await this.tokenService.persistRefreshToken(user);
+
+            const refreshToken = this.tokenService.generateRefreshToken(
+                payload,
+                newRefreshTokenDoc.id,
+            );
 
             // Should change for refresh token
             res.cookie('refreshToken', refreshToken, {
@@ -85,7 +74,10 @@ export class AuthController {
             });
 
             this.logger.info('User has been registered', { id: user.id });
-            res.status(201).json({ message: 'registration successful' });
+            res.status(201).json({
+                message: 'registration successful',
+                id: user.id,
+            });
         } catch (err) {
             next(err);
         }
