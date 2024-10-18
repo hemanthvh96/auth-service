@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import { User } from '../../entity/User';
 import { Roles } from '../../constants';
 import { isJWT } from '../utils';
+import { RefreshToken } from '../../entity/RefreshToken';
 
 describe('POST /auth/register', () => {
     let connection: DataSource;
@@ -181,6 +182,41 @@ describe('POST /auth/register', () => {
 
             expect(isJWT(accessToken)).toBeTruthy();
             expect(isJWT(refreshToken)).toBeTruthy();
+        });
+
+        it('should store refresh token in DB', async () => {
+            const userData = {
+                firstName: 'Hemanth',
+                lastName: 'V',
+                email: 'hemanthvhs@gmail.com',
+                password: 'test',
+            };
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            const refreshTokenRepo = connection.getRepository(RefreshToken);
+            // const refreshTokens = await refreshTokenRepo.find();
+
+            // expect(refreshTokens).toHaveLength(1);
+
+            // Better way of checking hence commented above
+
+            // Here we have aliased the table as refreshToken
+            // We are checking if there exists a record with refreshToken.userId = response.body.id
+            // :userId is a placeholder, we are actually passing userId to where in the options {userId:...}
+            // If refresh token for a particular userid persisted in DB, then we will get a token
+            // Then assert that it should have length of 1 (1 token)
+
+            const tokens = await refreshTokenRepo
+                .createQueryBuilder('refreshToken')
+                .where('refreshToken.userId = :userId', {
+                    userId: (response.body as Record<string, string>).id,
+                })
+                .getMany();
+
+            expect(tokens).toHaveLength(1);
         });
     });
 
