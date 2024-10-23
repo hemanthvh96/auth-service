@@ -36,4 +36,10 @@ export class UserService {
             throw error; // This is catched in the controller and send to the global error handler by calling next(error)
         }
     }
+
+    async findByEmail(email: string) {
+        return await this.userRepository.findOne({
+            where: { email: email },
+        });
+    }
 }
