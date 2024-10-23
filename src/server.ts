@@ -1,11 +1,14 @@
 import { Config } from './config';
 import app from './app';
 import logger from './config/logger';
+import { AppDataSource } from './config/data-source';
 
-const startServer = () => {
+const startServer = async () => {
     const PORT = Config.PORT;
 
     try {
+        await AppDataSource.initialize();
+        logger.info('Connected to the database');
         app.listen(PORT, () => {
             logger.info(`Listening on port ${PORT}`);
         });
@@ -19,7 +22,8 @@ const startServer = () => {
     }
 };
 
-startServer();
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+void startServer();
 
 /* 
 Why timeout needed to exit the process:

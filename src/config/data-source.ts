@@ -6,14 +6,14 @@ import { RefreshToken } from '../entity/RefreshToken';
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
-    host: 'localhost',
+    host: 'host.docker.internal',
     port: Number(Config.DB_PORT),
     username: Config.DB_USERNAME,
     password: Config.DB_PASSWORD,
     database: Config.DB_DATABASE,
     // SET synchronize: false in PRODUCTION
     // synchronize: Config.NODE_ENV === 'dev' || Config.NODE_ENV === 'test',
-    synchronize: false,
+    synchronize: true, // Turn to true
     logging: false,
     entities: [User, RefreshToken],
     migrations: [],
