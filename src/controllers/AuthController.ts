@@ -179,6 +179,6 @@ export class AuthController {
 
         const user = await this.userService.findById(Number(auth.sub));
 
-        res.status(200).json(user);
+        res.status(200).json({ ...user, password: undefined });
     }
 }

@@ -111,9 +111,11 @@ describe('POST /auth/register', () => {
             await request(app).post('/auth/register').send(userData);
 
             const userRepository = connection.getRepository(User);
-            const users = await userRepository.find();
+            const users = await userRepository.find({ select: ['password'] });
 
             expect(users[0].password).not.toBe(userData.password);
+            expect(users[0].password).toHaveLength(60); // WE NEED THIS AND BELOW AS WELL BECAUSE SOMETIMES ABOVE ASSERTION COULD BE PASSED THOGUH IF WE DONT HAVE PASSWORD FIELD FROM THE USER OBJECT.
+            expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
         });
 
         it('should return 400 status code if email is already present', async () => {
