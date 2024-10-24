@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { RegisterUserRequest } from '../types';
+import { AuthRequest, RegisterUserRequest } from '../types';
 import { UserService } from '../services/UserService';
 import { Logger } from 'winston';
 import { validationResult } from 'express-validator';
@@ -165,12 +165,20 @@ export class AuthController {
             this.logger.info('User has been logged in successfully', {
                 id: user.id,
             });
-            res.status(201).json({
+            res.status(200).json({
                 message: 'login successful',
                 id: user.id,
             });
         } catch (err) {
             next(err);
         }
+    }
+
+    async self(req: AuthRequest, res: Response) {
+        const { auth } = req;
+
+        const user = await this.userService.findById(Number(auth.sub));
+
+        res.status(200).json(user);
     }
 }
