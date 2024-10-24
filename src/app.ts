@@ -1,10 +1,12 @@
 import 'reflect-metadata';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import { globalErrorHandler } from './middlewares/globalErrorHandler';
 import authRouter from './routes/auth';
 
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
 
 app.get('/', (req, res) => {
