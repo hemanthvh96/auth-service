@@ -135,6 +135,10 @@ export class AuthController {
 
             const accessToken = this.tokenService.generateAccessToken(payload);
 
+            this.logger.info('New access token generated for the user', {
+                id: user.id,
+            });
+
             res.cookie('accessToken', accessToken, {
                 domain: 'localhost',
                 sameSite: 'strict',
@@ -147,6 +151,10 @@ export class AuthController {
 
             const newRefreshTokenDoc =
                 await this.tokenService.persistRefreshToken(user);
+
+            this.logger.info('New refresh token generated for the user', {
+                id: user.id,
+            });
 
             const refreshToken = this.tokenService.generateRefreshToken(
                 payload,
@@ -176,14 +184,75 @@ export class AuthController {
 
     async self(req: AuthRequest, res: Response, next: NextFunction) {
         const { auth } = req;
-
         const user = await this.userService.findById(Number(auth.sub));
-
         if (!user) {
             const error = createHttpError(404, 'User not found');
             return next(error);
         }
 
         res.status(200).json({ ...user, password: undefined });
+    }
+
+    async refreshToken(req: AuthRequest, res: Response, next: NextFunction) {
+        const payload: JwtPayload = {
+            sub: req.auth.sub,
+            role: req.auth.role,
+        };
+
+        const user = await this.userService.findById(Number(payload.sub));
+
+        if (!user) {
+            const error = createHttpError(
+                400,
+                'User with the token could not find in DB',
+            );
+            return next(error);
+        }
+
+        const accessToken = this.tokenService.generateAccessToken(payload);
+
+        this.logger.info('New access token generated for the user', {
+            id: user.id,
+        });
+
+        res.cookie('accessToken', accessToken, {
+            domain: 'localhost',
+            sameSite: 'strict',
+            maxAge: 1000 * 60 * 60,
+            secure: false, // IN PROD SET TO TRUE
+            httpOnly: true,
+        });
+
+        // PERSISTING REFRESH TOKEN TO DB:
+
+        const newRefreshTokenDoc =
+            await this.tokenService.persistRefreshToken(user);
+
+        // DELETE OLD REFRESH TOKEN IN DB:
+
+        await this.tokenService.deleteRefreshToken(Number(req.auth.jti));
+
+        const refreshToken = this.tokenService.generateRefreshToken(
+            payload,
+            newRefreshTokenDoc.id,
+        );
+
+        this.logger.info('New refresh token generated for the user', {
+            id: user.id,
+            tokenId: newRefreshTokenDoc.id,
+        });
+
+        // Should change for refresh token
+        res.cookie('refreshToken', refreshToken, {
+            domain: 'localhost',
+            sameSite: 'strict',
+            maxAge: 1000 * 60 * 60 * 24 * 365, // 1YEAR
+            secure: false, // IN PROD SET TO TRUE
+            httpOnly: true,
+        });
+
+        res.status(201).json({
+            id: user.id,
+        });
     }
 }

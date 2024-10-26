@@ -13,8 +13,9 @@ export interface RegisterUserRequest extends Request {
 
 export interface AuthRequest extends Request {
     auth: {
-        sub: number;
-        token: number;
+        sub: string;
+        role: string;
+        jti: string;
     };
 }
 
@@ -28,3 +29,8 @@ export interface ErrorResponse {
         stack: string;
     }[];
 }
+
+export type AuthCookie = {
+    refreshToken: string;
+    accessToken: string;
+};
