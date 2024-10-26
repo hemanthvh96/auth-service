@@ -6,17 +6,19 @@ import { RefreshToken } from '../entity/RefreshToken';
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
-    host: Config.DB_HOST,
+    host: process.env.DB_MIGRATION_HOST
+        ? process.env.DB_MIGRATION_HOST
+        : Config.DB_HOST,
     port: Number(Config.DB_PORT),
     username: Config.DB_USERNAME,
     password: Config.DB_PASSWORD,
     database: Config.DB_DATABASE,
     // SET synchronize: false in PRODUCTION
     // synchronize: Config.NODE_ENV === 'dev' || Config.NODE_ENV === 'test',
-    synchronize: true, // Turn to true
+    synchronize: false, // Turn to true
     logging: false,
     entities: [User, RefreshToken],
-    migrations: [],
+    migrations: ['src/migration/*.ts'],
     subscribers: [],
 });
 

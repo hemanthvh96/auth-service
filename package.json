@@ -10,7 +10,10 @@
       "lint": "eslint .",
       "lint:fix": "eslint . --fix",
       "prepare": "husky",
-      "test": "cross-env NODE_ENV=test jest --watch --runInBand"
+      "test": "cross-env NODE_ENV=test jest --watch --runInBand",
+      "migration-generate": "cross-env NODE_ENV=dev DB_MIGRATION_HOST=localhost typeorm-ts-node-commonjs migration:generate src/migration/migration -d src/config/data-source.ts",
+      "migration-run": "cross-env NODE_ENV=dev DB_MIGRATION_HOST=localhost typeorm-ts-node-commonjs migration:run -d src/config/data-source.ts",
+      "migration:create": "cross-env NODE_ENV=dev DB_MIGRATION_HOST=localhost typeorm-ts-node-commonjs migration:create"
    },
    "author": "Hemanth",
    "license": "ISC",

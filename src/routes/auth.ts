@@ -13,6 +13,7 @@ import { CredentialService } from '../services/CredentialService';
 import authenticate from '../middlewares/authenticate';
 import { AuthRequest } from '../types';
 import validateRefreshToken from '../middlewares/validateRefreshToken';
+import parseRefreshToken from '../middlewares/parseRefreshToken';
 
 const router = express.Router();
 
@@ -56,4 +57,21 @@ router.post(
         authController.refreshToken(req as AuthRequest, res, next),
 );
 
+router.post(
+    '/logout',
+    authenticate,
+    parseRefreshToken,
+    (req: Request, res: Response, next: NextFunction) =>
+        authController.logout(req as AuthRequest, res, next),
+);
+
 export default router;
+
+/* 
+validateRefreshToken and parseRefreshToken has the similar functionlaity except the isRevoked() method which is
+there on the validateRefreshToken middleware which is not required in parseRefreshToken as the name suggest that
+we are parsing the refresh token from the cookie.
+
+we use parseRefreshToken only in the logout here as we are deleting the refresh token from db
+
+*/
