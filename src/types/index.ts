@@ -17,3 +17,14 @@ export interface AuthRequest extends Request {
         token: number;
     };
 }
+
+export interface ErrorResponse {
+    error: {
+        ref: string;
+        type: string;
+        msg: string;
+        method: string;
+        path: string;
+        stack: string;
+    }[];
+}

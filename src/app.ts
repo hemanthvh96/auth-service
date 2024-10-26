@@ -9,6 +9,8 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
+app.use(express.static('public'));
+
 app.get('/', (req, res) => {
     res.status(200).send('Welcome to Auth Service !!!!');
 });

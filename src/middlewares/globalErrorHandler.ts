@@ -12,16 +12,16 @@ export const globalErrorHandler = (
     next: NextFunction,
 ) => {
     const errorID = uuidv4();
-    const statusCode = err.statusCode || 500;
-    const isProduction = Config.NODE_ENV === 'production';
+    const statusCode = err.statusCode || err.status || 500; //createHTTPError library adds error status on property statusCode however authicate.ts middleware expressJWT adds proporty err.status
+    const isProduction = Config.NODE_ENV === 'prod';
 
-    let message = 'Internal Server Error';
+    const message = err.message ? err.message : 'Internal Server Error';
 
     // TODO: Message can be made much more better
 
-    if (err.statusCode === 400) {
-        message = err.message;
-    }
+    // if (err.statusCode === 400) {
+    //     message = err.message;
+    // }
 
     logger.error(err.message, {
         id: errorID,

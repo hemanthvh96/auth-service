@@ -174,10 +174,15 @@ export class AuthController {
         }
     }
 
-    async self(req: AuthRequest, res: Response) {
+    async self(req: AuthRequest, res: Response, next: NextFunction) {
         const { auth } = req;
 
         const user = await this.userService.findById(Number(auth.sub));
+
+        if (!user) {
+            const error = createHttpError(404, 'User not found');
+            return next(error);
+        }
 
         res.status(200).json({ ...user, password: undefined });
     }

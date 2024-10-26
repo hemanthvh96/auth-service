@@ -4,17 +4,17 @@ import fs from 'fs';
 const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 2048,
     publicKeyEncoding: {
-        type: 'spki',
+        type: 'pkcs1',
         format: 'pem',
     },
     privateKeyEncoding: {
-        type: 'pkcs8',
+        type: 'pkcs1',
         format: 'pem',
     },
 });
 
 console.log('Public Key', publicKey);
-console.log('Public Key', publicKey);
+console.log('Public Key', privateKey);
 
 fs.writeFileSync('certs/private.pem', privateKey);
 fs.writeFileSync('certs/public.pem', publicKey);
