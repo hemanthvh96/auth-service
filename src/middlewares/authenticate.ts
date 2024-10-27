@@ -33,3 +33,17 @@ export default expressjwt({
 // If the token is invalid -> It sends 401 response
 // If the token is valid -> It attaches the decoded token payload to the req.auth object
 // NOTE: IN THE RECENT MIGRATION AT THIS TIME -> decoded token payload is attached to req.auth not req.user
+
+// Below is how decoded JWT payload looks like
+
+// {
+//     header: { alg: 'HS256', typ: 'JWT' },
+//     payload: {
+//       sub: '2',   ---------------> userId
+//       role: 'customer',
+//       iat: 1729901998,
+//       exp: 1761459598,
+//       iss: 'auth-service',
+//     },
+//     signature: 'YzRK41QGp8IDJmNr8flSG3nBxy6dqOh0FELZth-Mq7U'
+//   }
