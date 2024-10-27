@@ -34,3 +34,11 @@ export type AuthCookie = {
     refreshToken: string;
     accessToken: string;
 };
+
+export interface ITenant {
+    name: string;
+    address: string;
+}
+export interface TenantRequest extends Request {
+    body: ITenant;
+}

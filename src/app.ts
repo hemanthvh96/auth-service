@@ -3,6 +3,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import { globalErrorHandler } from './middlewares/globalErrorHandler';
 import authRouter from './routes/auth';
+import tenantRouter from './routes/tenant';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth', authRouter);
+app.use('/tenants', tenantRouter);
 
 app.use(globalErrorHandler);
 
