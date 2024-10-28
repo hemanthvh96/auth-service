@@ -1,7 +1,14 @@
-dist
-node_modules
-*.spec.ts
+# Ignore build output
+dist/
+node_modules/
+
+# Ignore test files and related folders
+**/*.spec.ts
 tests/
-.github
+
+# Ignore GitHub workflows
+.github/
+
+# Ignore JavaScript files
 *.js
 *.mjs
