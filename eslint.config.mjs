@@ -11,7 +11,7 @@ export default tseslint.config({
         eslintConfigPrettier,
     ],
     ignores: [
-        'dist/*',
+        'dist/',
         'node_modules',
         '*.spec.ts',
         '**/*.spec.ts',
