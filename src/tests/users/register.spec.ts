@@ -7,9 +7,21 @@ import { User } from '../../entity/User';
 import { Roles } from '../../constants';
 import { isJWT } from '../utils';
 import { RefreshToken } from '../../entity/RefreshToken';
+import { Config } from '../../config';
 
 describe('POST /auth/register', () => {
     let connection: DataSource;
+
+    console.log('************');
+
+    console.log(Config.DB_DATABASE);
+    console.log(Config.DB_HOST);
+    console.log(Config.DB_PASSWORD);
+    console.log(Config.DB_USERNAME);
+    console.log(Config.DB_PORT);
+    console.log(Config.JWKS_URI);
+
+    console.log('************');
 
     beforeAll(async () => {
         connection = await AppDataSource.initialize();
@@ -166,8 +178,8 @@ describe('POST /auth/register', () => {
 
             const cookies = (response.headers as Headers)['set-cookie'] || [];
 
-            let accessToken = null;
-            let refreshToken = null;
+            let accessToken: string | null = null;
+            let refreshToken: string | null = null;
 
             cookies.forEach((cookie) => {
                 if (cookie.startsWith('accessToken=')) {
