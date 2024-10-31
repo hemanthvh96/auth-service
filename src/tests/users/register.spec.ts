@@ -15,6 +15,8 @@ describe('POST /auth/register', () => {
     console.log('************');
 
     console.log('DB_DATABSE ENV', Config.DB_DATABASE);
+    console.log('DB_HOST ENV', Config.DB_HOST);
+    console.log('DB_HOST length ENV', Config.DB_HOST?.length);
     console.log(Config.DB_HOST);
     console.log(Config.DB_PASSWORD);
     console.log(Config.DB_USERNAME);
