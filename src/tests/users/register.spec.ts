@@ -12,22 +12,8 @@ import { Config } from '../../config';
 describe('POST /auth/register', () => {
     let connection: DataSource;
 
-    console.log('************');
-
-    console.log('DB_DATABSE ENV', Config.DB_DATABASE);
-    console.log('DB_HOST ENV', Config.DB_HOST);
-    console.log('DB_HOST length ENV', Config.DB_HOST?.length);
-    console.log(Config.DB_HOST);
-    console.log(Config.DB_PASSWORD);
-    console.log(Config.DB_USERNAME);
-    console.log(Config.DB_PORT);
-    console.log(Config.JWKS_URI);
-
-    console.log('************');
-
     beforeAll(async () => {
         connection = await AppDataSource.initialize();
-        console.log('check for connection', connection);
     });
 
     beforeEach(async () => {
