@@ -11,7 +11,7 @@
       "lint": "eslint src/",
       "lint:fix": "eslint src/ --fix",
       "prepare": "husky",
-      "test": "jest --no-cache --coverage --all --runInBand",
+      "test": "cross-env NODE_ENV=test jest --no-cache --coverage --all --runInBand",
       "test:watch": "cross-env NODE_ENV=test jest --watch --runInBand",
       "migration-generate": "cross-env NODE_ENV=dev DB_MIGRATION_HOST=localhost typeorm-ts-node-commonjs migration:generate",
       "migration-run": "cross-env NODE_ENV=dev DB_MIGRATION_HOST=localhost typeorm-ts-node-commonjs migration:run -d src/config/data-source.ts",
