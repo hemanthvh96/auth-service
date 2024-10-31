@@ -14,7 +14,7 @@ describe('POST /auth/register', () => {
 
     console.log('************');
 
-    console.log(Config.DB_DATABASE);
+    console.log('DB_DATABSE ENV', Config.DB_DATABASE);
     console.log(Config.DB_HOST);
     console.log(Config.DB_PASSWORD);
     console.log(Config.DB_USERNAME);
@@ -25,7 +25,7 @@ describe('POST /auth/register', () => {
 
     beforeAll(async () => {
         connection = await AppDataSource.initialize();
-        console.log("check for connection", connection);
+        console.log('check for connection', connection);
     });
 
     beforeEach(async () => {
