@@ -25,6 +25,7 @@ describe('POST /auth/register', () => {
 
     beforeAll(async () => {
         connection = await AppDataSource.initialize();
+        console.log("check for connection", connection);
     });
 
     beforeEach(async () => {
